@@ -1,4 +1,4 @@
-import schedule = require('../../node_modules/node-schedule')
+import schedule = require('../../../node_modules/node-schedule')
 
 
 class AlarmManager{
