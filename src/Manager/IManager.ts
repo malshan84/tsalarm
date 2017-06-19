@@ -1,3 +1,3 @@
 interface IManager{
-    run(cmd:string):void;
+    run(cmd: string): void;
 }

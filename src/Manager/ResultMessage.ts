@@ -1,20 +1,20 @@
 class ResultMessage{
-    private message_ : string;
-    private result_ : boolean;
+    private message_: string;
+    private result_: boolean;
 
-    setMessage(message : string) : void{
+    public setMessage(message: string): void {
         this.message_ = message;
     }
 
-    getMessage():string{
+    public getMessage(): string {
         return this.message_;
     }
 
-    setResult(result : boolean){
+    public setResult(result: boolean) {
         this.result_ = result;
     }
 
-    getResult():boolean{
+    public getResult(): boolean {
         return this.result_;
     }
 }

@@ -2,16 +2,16 @@ import {Job} from 'node-schedule'
 
 export class Alarm {
     
-    private creator_:string;
-    private time_:string;
-    private alarmName_:string;
-    private desc_:string = "";
-    private room_:string;
-    private active_:boolean = true;
-    private id_:string;
-    private job_ : Job;
+    private creator_: string;
+    private time_: string;
+    private alarmName_: string;
+    private desc_: string = "";
+    private room_: string;
+    private active_: boolean = true;
+    private id_: string;
+    private job_: Job;
 
-    constructor(creator:string, time:string, alarmName:string, desc:string, room:string, id:string) {
+    constructor(creator: string, time: string, alarmName: string, desc: string, room: string, id: string) {
         this.creator_ = creator;
         this.time_ = time;
         this.alarmName_ = alarmName;
@@ -20,16 +20,16 @@ export class Alarm {
         this.id_ = id;
     }
 
-    setJob(job : Job):void{
+    public setJob(job: Job): void {
         this.job_ = job;
     }
 
-    getJob():Job{
+    public getJob(): Job {
         return this.job_;
     }
 
-    getInfoString() : string {
-        let info :string = "";
+    public getInfoString(): string {
+        let info: string = "";
 
         info += "이름: " + this.alarmName_;
         info += "\r\n시간: " + this.time_;
