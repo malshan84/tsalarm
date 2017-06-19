@@ -18,9 +18,7 @@ export class AlarmManager implements IManager {
         return AlarmManager.Instance;
     }
 
-    private constructor () {
-
-    }
+    private constructor () {}
 
     public run(cmd: string): ResultMessage{
         const resultMessage: ResultMessage = new ResultMessage();

@@ -13,9 +13,7 @@ class ManagerFactory {
         return this.Instance;
     }
 
-    private constructor() {
-
-    }
+    private constructor() {}
 
     public createManager(kind: ManagerKind): IManager {
         switch(kind){
