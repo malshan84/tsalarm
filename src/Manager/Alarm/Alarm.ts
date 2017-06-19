@@ -1,4 +1,6 @@
-class Alarm {
+import {Job} from 'node-schedule'
+
+export class Alarm {
     
     private creator_:string;
     private time_:string;
@@ -7,6 +9,7 @@ class Alarm {
     private room_:string;
     private active_:boolean = true;
     private id_:string;
+    private job_ : Job;
 
     constructor(creator:string, time:string, alarmName:string, desc:string, room:string, id:string) {
         this.creator_ = creator;
@@ -17,7 +20,15 @@ class Alarm {
         this.id_ = id;
     }
 
-    public getInfoString() : string {
+    setJob(job : Job):void{
+        this.job_ = job;
+    }
+
+    getJob():Job{
+        return this.job_;
+    }
+
+    getInfoString() : string {
         let info :string = "";
 
         info += "이름: " + this.alarmName_;

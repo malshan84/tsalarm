@@ -10,5 +10,9 @@
   "license": "ISC",
   "dependencies": {
     "node-schedule": "^1.2.3"
+  },
+  "devDependencies": {
+    "@types/node": "^7.0.31",
+    "@types/node-schedule": "^1.2.0"
   }
 }
