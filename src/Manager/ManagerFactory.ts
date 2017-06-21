@@ -1,4 +1,5 @@
 import {AlarmManager} from "./Alarm/AlarmManager";
+import { IManager } from "./IManager";
 
 enum ManagerKind{
     Alarm

@@ -1,3 +1,7 @@
+import {ResultMessage} from './ResultMessage'
+
 interface IManager{
-    run(cmd: string): void;
+    run(cmd: string): ResultMessage;
 }
+
+export {IManager}

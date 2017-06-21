@@ -7,11 +7,15 @@
     "allowJs": true,
     "strict": true,                           /* Enable all strict type-checking options. */
     "strictNullChecks": false,
-    "sourceMap": true
+    "sourceMap": true,
+    "types": [
+      "mocha"
+    ]
   },
   "include": [
     "src/**/*.ts",
-    "src/**/*.tsx"   
+    "src/**/*.tsx",
+    "test/**/*.ts"
   ],
   "exclude": [
     "node_modules/**/*",

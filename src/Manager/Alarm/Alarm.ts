@@ -28,6 +28,22 @@ export class Alarm {
         return this.job_;
     }
 
+    public isActive(): boolean {
+        return this.active_;
+    }
+
+    public setActive(active: boolean) {
+        this.active_ = active;
+    }
+
+    public getAlarmKey(): string {
+        return this.alarmName_+'_'+this.id_;
+    }
+
+    public getTime(): string {
+        return this.time_;
+    }
+
     public getInfoString(): string {
         let info: string = "";
 
