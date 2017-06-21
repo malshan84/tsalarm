@@ -31,12 +31,29 @@ export class AlarmManager implements IManager {
                 const resultMessage: ResultMessage = this.remove("alarmName", "id");
                 return resultMessage;
             }
+            case 'on': {
+                const resultMessage: ResultMessage = this.on("alarmName", "id");
+                return resultMessage;
+            }
+            case 'off': {
+                const resultMessage: ResultMessage = this.off("alarmName", "id");
+                return resultMessage;
+            }
+            case 'show' : {
+                const resultMessage: ResultMessage = this.showList();
+                return resultMessage;
+            }
+            default: {
+                const resultMessage: ResultMessage = new ResultMessage();
+                resultMessage.setMessage('잘못된 명령어 입니다.');
+                resultMessage.setResult(false);
+            }
         }
         
         return new ResultMessage();
     }
 
-    public create (creator: string, time: string, alarmName: string, desc: string, room: string, id: string) :ResultMessage {
+    private create (creator: string, time: string, alarmName: string, desc: string, room: string, id: string) :ResultMessage {
         const resultMessage: ResultMessage = new ResultMessage();
 
         const alarm: Alarm = new Alarm(creator,time, alarmName, desc, room, id);
@@ -53,7 +70,7 @@ export class AlarmManager implements IManager {
         return resultMessage;
     }
 
-    public remove (alarmName:string, id:string): ResultMessage{
+    private remove (alarmName: string, id: string): ResultMessage {
         const resultMessage: ResultMessage = new ResultMessage();
         if(!this.isAlreadyAlarm(alarmName, id)){
             resultMessage.setResult(false);
@@ -70,6 +87,65 @@ export class AlarmManager implements IManager {
         return resultMessage;
     }
 
+    private on (alarmName: string, id: string): ResultMessage {
+        const resultMessage: ResultMessage = new ResultMessage();
+        if(!this.isAlreadyAlarm(alarmName, id)){
+            resultMessage.setResult(false);
+            resultMessage.setMessage('\"' + alarmName + '\" 으로 등록된 알람이 없습니다.');
+            return resultMessage;
+        }
+
+        const alarm: Alarm = AlarmManager.alarmMap[alarmName+'_'+id];
+        if(alarm.isActive()){
+            resultMessage.setResult(false);
+            resultMessage.setMessage('이미 켜져있는 알람입니다.');
+            return resultMessage;
+        }
+
+        this.regist(alarm);
+
+        resultMessage.setResult(true);
+        resultMessage.setMessage('\"' + alarmName + '\" 으로 등록된 알람이 시작 되었습니다.');
+
+        return resultMessage;
+    }
+
+    private off (alarmName: string, id: string): ResultMessage {
+        const resultMessage: ResultMessage = new ResultMessage();
+        if(!this.isAlreadyAlarm(alarmName, id)){
+            resultMessage.setResult(false);
+            resultMessage.setMessage('\"' + alarmName + '\" 으로 등록된 알람이 없습니다.');
+            return resultMessage;
+        }
+
+        const alarm: Alarm = AlarmManager.alarmMap[alarmName+'_'+id];
+        if(!alarm.isActive()){
+            resultMessage.setResult(false);
+            resultMessage.setMessage('이미 꺼져있는 알람입니다.');
+            return resultMessage;
+        }
+
+        this.cancel(alarm);
+
+        resultMessage.setResult(true);
+        resultMessage.setMessage('\"' + alarmName + '\" 으로 등록된 알람이 중지 되었습니다.');
+
+        return resultMessage;
+    }
+
+    private showList (): ResultMessage {
+        const resultMessage: ResultMessage = new ResultMessage();
+        let list: string = '';
+        for(const key in AlarmManager.alarmMap){
+            if(AlarmManager.alarmMap.hasOwnProperty(key)) {
+                list+=AlarmManager.alarmMap[key].getInfoString()+'\r\n';
+            }
+        }
+        resultMessage.setMessage(list);
+        resultMessage.setResult(true);
+        return resultMessage;
+    }    
+
     private regist(alarm: Alarm) {
         alarm.setJob(schedule.scheduleJob(alarm.getTime(), function(){
             /**
@@ -78,7 +154,7 @@ export class AlarmManager implements IManager {
              */
            console.log(AlarmManager.alarmMap[alarm.getAlarmKey()].getInfoString());
        }));
-       alarm.setActive(false);
+       alarm.setActive(true);
     }
 
     private cancel(alarm: Alarm){
