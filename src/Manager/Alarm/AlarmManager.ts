@@ -21,18 +21,19 @@ export class AlarmManager implements IManager {
 
     private constructor () {}
 
-    public run(cmd: string): ResultMessage {
-        var resultMessage: ResultMessage = new ResultMessage();
+    public run(cmd: string): ResultMessage {        
         switch(cmd){
             case 'create': {
-                resultMessage = this.create("creator", "* * * * * *", "alarmName", "desc", "room", "id");
+                const resultMessage: ResultMessage = this.create("creator", "* * * * * *", "alarmName", "desc", "room", "id");
+                return resultMessage;
             }
             case 'remove': {
-                resultMessage = this.remove("alarmName", "id");
+                const resultMessage: ResultMessage = this.remove("alarmName", "id");
+                return resultMessage;
             }
         }
         
-        return resultMessage;
+        return new ResultMessage();
     }
 
     public create (creator: string, time: string, alarmName: string, desc: string, room: string, id: string) :ResultMessage {

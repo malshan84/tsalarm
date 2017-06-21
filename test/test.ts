@@ -9,7 +9,7 @@ const kind : ManagerKind = ManagerKind.Alarm;
 const manager : IManager = ManagerFactory.getInstance().createManager(kind);
 
 describe('AlarmManager test', function() {
-    it('알람 생성', function(){
+    it('알람 생성', function(){        
         expect(manager.run("create").getMessage()).to.equal('"alarmName" 알람 생성 완료!!');
     });
     it('동일한 알람 생성', function(){
