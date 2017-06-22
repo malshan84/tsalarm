@@ -21,62 +21,74 @@ export class AlarmManager implements IManager {
 
     private constructor () {}
 
-    public run(cmd: string): ResultMessage {        
-        switch(cmd){
+    public run(action: string): ResultMessage {
+        const alarmName: string = 'alarmName';
+        const id: string = 'id';
+        let resultMessage: ResultMessage = new ResultMessage();   
+
+        switch(action){
             case 'create': {
-                const resultMessage: ResultMessage = this.create("creator", "* * * * * *", "alarmName", "desc", "room", "id");
-                return resultMessage;
+                resultMessage = this.isAlreadyAlarm(alarmName, id);
+                if(resultMessage.getResult()){
+                    break;
+                }
+                resultMessage = this.create("creator", "* * * * * *", alarmName, "desc", "room", id);
+                break;
             }
             case 'remove': {
-                const resultMessage: ResultMessage = this.remove("alarmName", "id");
-                return resultMessage;
+                resultMessage = this.isAlreadyAlarm(alarmName, id);
+                if(!resultMessage.getResult()){
+                    break;
+                }
+                resultMessage = this.remove(alarmName, id);
+                break;
             }
             case 'on': {
-                const resultMessage: ResultMessage = this.on("alarmName", "id");
-                return resultMessage;
+                resultMessage = this.isAlreadyAlarm(alarmName, id);
+                if(!resultMessage.getResult()){
+                    break;
+                }
+                resultMessage = this.on(alarmName, id);
+                break;
             }
             case 'off': {
-                const resultMessage: ResultMessage = this.off("alarmName", "id");
-                return resultMessage;
+                resultMessage = this.isAlreadyAlarm(alarmName, id);
+                if(!resultMessage.getResult()){
+                    break;
+                }
+                resultMessage = this.off(alarmName, id);
+                break;
             }
-            case 'show' : {
-                const resultMessage: ResultMessage = this.showList();
-                return resultMessage;
+            case 'show': {
+                resultMessage = this.showList();
+                break;
             }
             default: {
-                const resultMessage: ResultMessage = new ResultMessage();
-                resultMessage.setMessage('잘못된 명령어 입니다.');
+                resultMessage.setMessage('\'' + action + '\' 등록되지 않은 명령어 입니다.');
                 resultMessage.setResult(false);
+                break;
             }
         }
         
-        return new ResultMessage();
+        return resultMessage;
     }
 
     private create (creator: string, time: string, alarmName: string, desc: string, room: string, id: string) :ResultMessage {
         const resultMessage: ResultMessage = new ResultMessage();
 
         const alarm: Alarm = new Alarm(creator,time, alarmName, desc, room, id);
-        if (this.isAlreadyAlarm(alarmName,id)) {
-            resultMessage.setResult(false);
-            resultMessage.setMessage('\"' + alarmName + '\" 으로 등록된 알람이 이미 있습니다. 다른 이름으로 등록해주세요.');
-            return resultMessage;
-        }
         this.regist(alarm);
         AlarmManager.alarmMap[alarm.getAlarmKey()] = alarm;
 
         resultMessage.setResult(true);
         resultMessage.setMessage('\"' + alarmName + '\" 알람 생성 완료!!');
+
         return resultMessage;
     }
 
     private remove (alarmName: string, id: string): ResultMessage {
         const resultMessage: ResultMessage = new ResultMessage();
-        if(!this.isAlreadyAlarm(alarmName, id)){
-            resultMessage.setResult(false);
-            resultMessage.setMessage('\"' + alarmName + '\" 으로 등록된 알람이 없습니다.');
-            return resultMessage;
-        }
+       
         const alarm: Alarm = AlarmManager.alarmMap[alarmName+'_'+id];
         this.cancel(alarm);
         delete AlarmManager.alarmMap[alarm.getAlarmKey()];
@@ -89,11 +101,6 @@ export class AlarmManager implements IManager {
 
     private on (alarmName: string, id: string): ResultMessage {
         const resultMessage: ResultMessage = new ResultMessage();
-        if(!this.isAlreadyAlarm(alarmName, id)){
-            resultMessage.setResult(false);
-            resultMessage.setMessage('\"' + alarmName + '\" 으로 등록된 알람이 없습니다.');
-            return resultMessage;
-        }
 
         const alarm: Alarm = AlarmManager.alarmMap[alarmName+'_'+id];
         if(alarm.isActive()){
@@ -112,11 +119,6 @@ export class AlarmManager implements IManager {
 
     private off (alarmName: string, id: string): ResultMessage {
         const resultMessage: ResultMessage = new ResultMessage();
-        if(!this.isAlreadyAlarm(alarmName, id)){
-            resultMessage.setResult(false);
-            resultMessage.setMessage('\"' + alarmName + '\" 으로 등록된 알람이 없습니다.');
-            return resultMessage;
-        }
 
         const alarm: Alarm = AlarmManager.alarmMap[alarmName+'_'+id];
         if(!alarm.isActive()){
@@ -141,8 +143,10 @@ export class AlarmManager implements IManager {
                 list+=AlarmManager.alarmMap[key].getInfoString()+'\r\n';
             }
         }
+
         resultMessage.setMessage(list);
         resultMessage.setResult(true);
+
         return resultMessage;
     }    
 
@@ -162,10 +166,15 @@ export class AlarmManager implements IManager {
         alarm.setActive(false);
     }
 
-    private isAlreadyAlarm(name: string, id: string) :boolean {
+    private isAlreadyAlarm(name: string, id: string) :ResultMessage {
+        const resultMessage: ResultMessage = new ResultMessage();
         if(AlarmManager.alarmMap[name+'_'+id] === undefined) {
-            return false;
+            resultMessage.setResult(false);
+            resultMessage.setMessage('\"' + name + '\" 으로 등록된 알람이 없습니다.');
+        }else{
+            resultMessage.setResult(true);
+            resultMessage.setMessage('\"' + name + '\" 으로 등록된 알람이 이미 있습니다. 다른 이름으로 등록해주세요.');
         }
-        return true;
+        return resultMessage;
     }
 }
