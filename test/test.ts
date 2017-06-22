@@ -48,4 +48,7 @@ describe('AlarmManager test', function() {
     it('없는 알람 켜기', function(){
         expect(manager.run("off").getMessage()).to.equal('"alarmName" 으로 등록된 알람이 없습니다.');
     });
+    it('빈 리스트 보기', function(){
+        expect(manager.run("show").getMessage()).to.equal('등록된 알람이 없습니다!');
+    });
 });

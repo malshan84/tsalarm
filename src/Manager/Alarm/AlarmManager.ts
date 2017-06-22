@@ -143,7 +143,9 @@ export class AlarmManager implements IManager {
                 list+=AlarmManager.alarmMap[key].getInfoString()+'\r\n';
             }
         }
-
+        if (list.length === 0) {
+            list = '등록된 알람이 없습니다!';
+        }
         resultMessage.setMessage(list);
         resultMessage.setResult(true);
 
