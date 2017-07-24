@@ -174,7 +174,7 @@ export class AlarmManager implements IManager {
         resultMessage.setMessage('모든 알람이 중지 되었습니다.');
         resultMessage.setResult(true);
         return resultMessage;
-    }
+    } 
 
     private wake (id: string): ResultMessage {
         const resultMessage: ResultMessage = new ResultMessage();
