@@ -4,10 +4,11 @@ import { expect } from 'chai';
 import {ManagerFactory} from "../src/Manager/ManagerFactory"
 import {ManagerKind} from "../src/Manager/ManagerFactory"
 import { IManager } from "../src/Manager/IManager";
+import { AlarmManager } from '../src/Manager/Alarm/AlarmManager';
 
 const kind : ManagerKind = ManagerKind.Alarm;
 const manager : IManager = ManagerFactory.getInstance().createManager(kind);
-
+ 
 describe('AlarmManager test', function() {
     it('알람 생성', function(){        
         expect(manager.run("create").getMessage()).to.equal('"alarmName" 알람 생성 완료!!');
@@ -23,6 +24,18 @@ describe('AlarmManager test', function() {
     });       
     it('동일한 알람 생성', function(){
         expect(manager.run("create").getMessage()).to.equal('"alarmName" 으로 등록된 알람이 이미 있습니다. 다른 이름으로 등록해주세요.');
+    });
+    it('모든 알람 끄기', function(){
+        expect(manager.run("mute").getMessage()).to.equal('모든 알람이 중지 되었습니다.');
+    });
+    it('알람 또 끄기', function(){
+        expect(manager.run("off").getMessage()).to.equal('이미 꺼져있는 알람입니다.');
+    });
+    it('모든 알람 켜기', function(){
+        expect(manager.run("wake").getMessage()).to.equal('모든 알람이 시작 되었습니다.');
+    });
+    it('알람 또 켜기', function(){
+        expect(manager.run("on").getMessage()).to.equal('이미 켜져있는 알람입니다.');
     });
     it('알람 끄기', function(){
         expect(manager.run("off").getMessage()).to.equal('"alarmName" 으로 등록된 알람이 중지 되었습니다.');

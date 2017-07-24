@@ -44,6 +44,10 @@ export class Alarm {
         return this.time_;
     }
 
+    public getId(): string {
+        return this.id_;
+    }
+
     public getInfoString(): string {
         let info: string = "";
 

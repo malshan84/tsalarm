@@ -63,6 +63,14 @@ export class AlarmManager implements IManager {
                 resultMessage = this.showList();
                 break;
             }
+            case 'mute': {
+                resultMessage = this.mute(id);
+                break;
+            }
+            case 'wake': {
+                resultMessage = this.wake(id);
+                break;
+            }
             default: {
                 resultMessage.setMessage('\'' + action + '\' 등록되지 않은 명령어 입니다.');
                 resultMessage.setResult(false);
@@ -150,7 +158,40 @@ export class AlarmManager implements IManager {
         resultMessage.setResult(true);
 
         return resultMessage;
-    }    
+    }
+
+    private mute (id: string): ResultMessage {
+        const resultMessage: ResultMessage = new ResultMessage();
+
+        for(const key in AlarmManager.alarmMap){
+            if(AlarmManager.alarmMap.hasOwnProperty(key)) {
+                if(AlarmManager.alarmMap[key].getId() === id) {
+                    this.cancel(AlarmManager.alarmMap[key]);
+                }
+            }
+        }
+
+        resultMessage.setMessage('모든 알람이 중지 되었습니다.');
+        resultMessage.setResult(true);
+        return resultMessage;
+    }
+
+    private wake (id: string): ResultMessage {
+        const resultMessage: ResultMessage = new ResultMessage();
+
+        for(const key in AlarmManager.alarmMap){
+            if(AlarmManager.alarmMap.hasOwnProperty(key)) {
+                if(AlarmManager.alarmMap[key].getId() === id) {
+                    this.regist(AlarmManager.alarmMap[key]);
+                }
+            }
+        }
+
+        resultMessage.setMessage('모든 알람이 시작 되었습니다.');
+        resultMessage.setResult(true);
+
+        return resultMessage;
+    }
 
     private regist(alarm: Alarm) {
         alarm.setJob(schedule.scheduleJob(alarm.getTime(), function(){
