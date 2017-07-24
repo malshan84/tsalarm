@@ -4,11 +4,12 @@ import { IManager } from "./Manager/IManager";
 
 import * as line from "@line/bot-sdk";
 import * as express from "express";
+import * as info from "./Line/info";
 import { JSONParseError, SignatureValidationFailed } from "../node_modules/@line/bot-sdk/lib/exceptions";
 
 const config = {
-    channelAccessToken: process.env.CHANNEL_ACCESS_TOKEN,
-    channelSecret: process.env.CHANNEL_SECRET
+    channelAccessToken: info.CHANNEL_ACCESS_TOKEN,
+    channelSecret: info.CHANNEL_SECRET
 };
 
 const client = new line.Client(config);
