@@ -7,6 +7,8 @@ import * as express from "express";
 import * as info from "./Line/info";
 import { JSONParseError, SignatureValidationFailed } from "../node_modules/@line/bot-sdk/lib/exceptions";
 
+import bodyParser = require('body-parser');
+
 const config = {
     channelAccessToken: info.CHANNEL_ACCESS_TOKEN,
     channelSecret: info.CHANNEL_SECRET
@@ -15,6 +17,8 @@ const config = {
 const client = new line.Client(config);
 
 const app = express();
+app.use(bodyParser.urlencoded({extended: false}));
+app.use(bodyParser.json());
 
 app.get('/', (req: express.Request, res: express.Response) => {
 	console.log('[GET]/');
@@ -22,16 +26,17 @@ app.get('/', (req: express.Request, res: express.Response) => {
 	res.end('<h1><a href="http://8ctci.weebly.com">Hello, I\'m the Master of Time!</a><h1>');
 });
 
-app.get('/webhook', (req: express.Request, res: express.Response) => {
-	console.log('[GET]/');
-	res.writeHead(200, {'Content-Type' : 'text/html'});
-	res.end('<h1><a href="http://8ctci.weebly.com">Hello, I\'m the Master of Time!</a><h1>');
-});
+// app.get('/webhook', (req: express.Request, res: express.Response) => {
+// 	console.log('[GET]/');
+// 	res.writeHead(200, {'Content-Type' : 'text/html'});
+// 	res.end('<h1><a href="http://8ctci.weebly.com">Hello, I\'m the Master of Time!</a><h1>');
+// });
 
 app.post('/webhook', line.middleware(config), (req: express.Request, res: express.Response) => {
-    Promise.all(req.body.events.map(handleEvent)).then((result) => res.json(result));
+    Promise
+    .all(req.body.events.map(handleEvent))
+    .then((result) => res.json(result));
 });
-
 
 // event handler
 function handleEvent(event : Line.MessageEvent) {
@@ -39,9 +44,17 @@ function handleEvent(event : Line.MessageEvent) {
     // ignore non-text-message event
     return Promise.resolve(null);
   }
-  const eventMessage : Line.TextEventMessage = event.message as Line.TextEventMessage;
+  const source : Line.EventSource = event.source;
+  const message : Line.TextEventMessage = event.message;
+
+	console.log('======================', new Date() ,'======================');
+	console.log('[request source] ', source);
+	console.log('[request message]', message);
+	console.log('[request text]', message.text);
+  
+  manager.run(message.text);
   // create a echoing text message
-  const echo : Line.TextMessage = { type: 'text', text: eventMessage.text };
+  const echo : Line.TextMessage = { type: 'text', text: message.text };
 
   // use reply API
   return client.replyMessage(event.replyToken, echo);
@@ -58,3 +71,4 @@ const kind : ManagerKind = ManagerKind.Alarm;
 const managerFactory : ManagerFactory = ManagerFactory.getInstance();
 const manager : IManager = managerFactory.createManager(kind);
 
+export = app;
