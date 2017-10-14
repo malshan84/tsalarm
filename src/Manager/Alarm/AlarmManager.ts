@@ -1,7 +1,9 @@
 import {IManager} from '../IManager'
 import {Alarm} from './Alarm'
 import {ResultMessage} from '../ResultMessage'
+import {ArgsParser} from './ArgsParser'
 import * as schedule from 'node-schedule'
+import {ParsedCommands} from './ParsedCommands';
 
 interface AlarmMap {
     [key: string]: Alarm;
@@ -21,11 +23,23 @@ export class AlarmManager implements IManager {
 
     private constructor () {}
 
-    public run(action: string): ResultMessage {
-        const alarmName: string = 'alarmName';
+    public run(text: string): ResultMessage {
+
+        let result : ParsedCommands = null;
+        if(text.startsWith("@alarm ")) {
+            let argsParser = new ArgsParser();
+            result = argsParser.parse(text.substr("@alarm ".length));
+        } else if(text.startsWith("@알람 ")) {
+            let argsParser = new ArgsParser();
+            result = argsParser.parse(text.substr("@알람 ".length));
+        } else {
+            // throw
+        }
+
+        const alarmName: string = result.getName();
         const id: string = 'id';
         let resultMessage: ResultMessage = new ResultMessage();   
-
+        const action : string = result.getQuery();
         switch(action){
             case 'create': {
                 resultMessage = this.isAlreadyAlarm(alarmName, id);

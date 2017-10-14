@@ -1,7 +1,7 @@
 import { ManagerFactory } from "./Manager/ManagerFactory"
 import { ManagerKind } from "./Manager/ManagerFactory"
 import { IManager } from "./Manager/IManager";
-
+import {ResultMessage} from "./Manager/ResultMessage"
 import * as line from "@line/bot-sdk";
 import * as express from "express";
 import * as info from "./Line/info";
@@ -14,7 +14,7 @@ const config = {
     channelSecret: info.CHANNEL_SECRET
 };
 
-const client = new line.Client(config);
+const client : line.Client = new line.Client(config);
 
 const app = express();
 app.use(bodyParser.urlencoded({extended: false}));
@@ -36,6 +36,8 @@ app.post('/webhook', line.middleware(config), (req: express.Request, res: expres
     Promise
     .all(req.body.events.map(handleEvent))
     .then((result) => res.json(result));
+    
+    res.sendStatus(200);
 });
 
 // event handler
@@ -57,14 +59,14 @@ function handleEvent(event : Line.MessageEvent) {
   const manager : IManager = managerFactory.createManager(kind);
 
   // 2) 해당 매니저로 쿼리 수행
-  manager.run(message.text);
-  
+  let resultMessage : ResultMessage = manager.run(message.text);
+
 
   // create a echoing text message
-  const echo : Line.TextMessage = { type: 'text', text: message.text };
+  const replyTextMessage : Line.TextMessage = { type: 'text', text: resultMessage.getMessage() };
 
   // use reply API
-  return client.replyMessage(event.replyToken, echo);
+  return client.replyMessage(event.replyToken, replyTextMessage);
 }
 
 // listen on port
@@ -73,9 +75,6 @@ app.listen(port, () => {
   console.log(`listening on ${port}`);
 });
 
-
-// const kind : ManagerKind = ManagerKind.Alarm;
 const managerFactory : ManagerFactory = ManagerFactory.getInstance();
-// const manager : IManager = managerFactory.createManager(kind);
 
 export = app;
