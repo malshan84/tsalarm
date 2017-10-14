@@ -27,6 +27,13 @@ class ManagerFactory {
             }
         }
     }
+
+    public getKind(text: string) {
+        if(text.startsWith("@alarm ") || text.startsWith("@알람")) {
+            return ManagerKind.Alarm;
+        }
+        return ManagerKind.Alarm;
+    }
 }
 
 export {ManagerFactory};

@@ -52,7 +52,14 @@ function handleEvent(event : Line.MessageEvent) {
 	console.log('[request message]', message);
 	console.log('[request text]', message.text);
   
+  // 1) 어떤 매니저를 사용할 지 확인
+  const kind : ManagerKind = managerFactory.getKind(message.text);
+  const manager : IManager = managerFactory.createManager(kind);
+
+  // 2) 해당 매니저로 쿼리 수행
   manager.run(message.text);
+  
+
   // create a echoing text message
   const echo : Line.TextMessage = { type: 'text', text: message.text };
 
@@ -67,8 +74,8 @@ app.listen(port, () => {
 });
 
 
-const kind : ManagerKind = ManagerKind.Alarm;
+// const kind : ManagerKind = ManagerKind.Alarm;
 const managerFactory : ManagerFactory = ManagerFactory.getInstance();
-const manager : IManager = managerFactory.createManager(kind);
+// const manager : IManager = managerFactory.createManager(kind);
 
 export = app;
