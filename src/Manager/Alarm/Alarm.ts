@@ -2,7 +2,6 @@ import {Job} from 'node-schedule'
 
 export class Alarm {
     
-    private creator_: string;
     private time_: string;
     private alarmName_: string;
     private desc_: string = "";
@@ -11,12 +10,10 @@ export class Alarm {
     private id_: string;
     private job_: Job;
 
-    constructor(creator: string, time: string, alarmName: string, desc: string, room: string, id: string) {
-        this.creator_ = creator;
+    constructor(time: string, alarmName: string, desc: string, id: string) {
         this.time_ = time;
         this.alarmName_ = alarmName;
         this.desc_ = desc;
-        this.room_ = room;
         this.id_ = id;
     }
 
@@ -36,7 +33,11 @@ export class Alarm {
         this.active_ = active;
     }
 
-    public getAlarmKey(): string {
+    public getName(): string{
+        return this.alarmName_;
+    }
+
+    public getKey(): string {
         return this.alarmName_+'_'+this.id_;
     }
 
@@ -46,6 +47,10 @@ export class Alarm {
 
     public getId(): string {
         return this.id_;
+    }
+    
+    public getDescription(): string{
+        return this.desc_;
     }
 
     public getInfoString(): string {

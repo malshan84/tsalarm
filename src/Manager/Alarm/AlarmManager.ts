@@ -4,6 +4,7 @@ import {ResultMessage} from '../ResultMessage'
 import {ArgsParser} from './ArgsParser'
 import * as schedule from 'node-schedule'
 import {ParsedCommands} from './ParsedCommands';
+import * as request from 'request';
 
 interface AlarmMap {
     [key: string]: Alarm;
@@ -38,6 +39,7 @@ export class AlarmManager implements IManager {
 
         const alarmName: string = result.getName();
         const id: string = 'id';
+        const description: string = result.getDesc();
         let resultMessage: ResultMessage = new ResultMessage();   
         const action : string = result.getQuery();
         switch(action){
@@ -46,7 +48,7 @@ export class AlarmManager implements IManager {
                 if(resultMessage.getResult()){
                     break;
                 }
-                resultMessage = this.create("creator", "* * * * * *", alarmName, "desc", "room", id);
+                resultMessage = this.create(result.getTime(), alarmName, description, id);
                 break;
             }
             case 'remove': {
@@ -95,12 +97,12 @@ export class AlarmManager implements IManager {
         return resultMessage;
     }
 
-    private create (creator: string, time: string, alarmName: string, desc: string, room: string, id: string) :ResultMessage {
+    private create (time: string, alarmName: string, desc: string, id: string) :ResultMessage {
         const resultMessage: ResultMessage = new ResultMessage();
 
-        const alarm: Alarm = new Alarm(creator,time, alarmName, desc, room, id);
+        const alarm: Alarm = new Alarm(time, alarmName, desc, id);
         this.regist(alarm);
-        AlarmManager.alarmMap[alarm.getAlarmKey()] = alarm;
+        AlarmManager.alarmMap[alarm.getKey()] = alarm;
 
         resultMessage.setResult(true);
         resultMessage.setMessage('\"' + alarmName + '\" 알람 생성 완료!!');
@@ -113,7 +115,7 @@ export class AlarmManager implements IManager {
        
         const alarm: Alarm = AlarmManager.alarmMap[alarmName+'_'+id];
         this.cancel(alarm);
-        delete AlarmManager.alarmMap[alarm.getAlarmKey()];
+        delete AlarmManager.alarmMap[alarm.getKey()];
 
         resultMessage.setMessage('\"' + alarmName + '\" 알람을 제거하였습니다.');
         resultMessage.setResult(true);
@@ -209,11 +211,22 @@ export class AlarmManager implements IManager {
 
     private regist(alarm: Alarm) {
         alarm.setJob(schedule.scheduleJob(alarm.getTime(), function(){
-            /**
-             * TODO
-             * 알람 메시지 구현
-             */
-           console.log(AlarmManager.alarmMap[alarm.getAlarmKey()].getInfoString());
+           console.log(AlarmManager.alarmMap[alarm.getKey()].getInfoString());
+           request.post({
+                url: 'http://localhost:8000/alarm',
+                body: {
+                desc: alarm.getDescription(),
+                alarmName: alarm.getName(),
+                id: alarm.getId()
+                },
+                json: true
+            },
+                function (err, httpResponse, body) {
+                    if (err) {
+                        //logger.error(err);
+                    }
+                }
+            );
        }));
        alarm.setActive(true);
     }

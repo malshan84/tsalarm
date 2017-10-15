@@ -61,8 +61,6 @@ function handleEvent(event : Line.MessageEvent) {
   // 2) 해당 매니저로 쿼리 수행
   let resultMessage : ResultMessage = manager.run(message.text);
 
-
-  // create a echoing text message
   const replyTextMessage : Line.TextMessage = { type: 'text', text: resultMessage.getMessage() };
 
   // use reply API
