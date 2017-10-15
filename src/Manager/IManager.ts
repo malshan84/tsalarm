@@ -1,7 +1,8 @@
 import {ResultMessage} from './ResultMessage'
 
 interface IManager{
-    run(cmd: string): ResultMessage;
+    run(text: string): ResultMessage;
+    setId(id: string): IManager;
 }
 
 export {IManager}

@@ -12,8 +12,8 @@ interface AlarmMap {
 
 export class AlarmManager implements IManager {
     private static Instance: AlarmManager = null;
-    private static alarmMap: AlarmMap={};
-    
+    private static _alarmMap: AlarmMap = {};
+    private _id: string = '';
     public static getInstance(): AlarmManager {
         if(AlarmManager.Instance === null){
             AlarmManager.Instance = new AlarmManager();
@@ -23,6 +23,11 @@ export class AlarmManager implements IManager {
     }
 
     private constructor () {}
+
+    public setId(id: string): IManager {
+        this._id = id;
+        return this;
+    }
 
     public run(text: string): ResultMessage {
 
@@ -38,41 +43,40 @@ export class AlarmManager implements IManager {
         }
 
         const alarmName: string = result.getName();
-        const id: string = 'id';
         const description: string = result.getDesc();
         let resultMessage: ResultMessage = new ResultMessage();   
         const action : string = result.getQuery();
         switch(action){
             case 'create': {
-                resultMessage = this.isAlreadyAlarm(alarmName, id);
+                resultMessage = this.isAlreadyAlarm(alarmName, this._id);
                 if(resultMessage.getResult()){
                     break;
                 }
-                resultMessage = this.create(result.getTime(), alarmName, description, id);
+                resultMessage = this.create(result.getTime(), alarmName, description, this._id);
                 break;
             }
             case 'remove': {
-                resultMessage = this.isAlreadyAlarm(alarmName, id);
+                resultMessage = this.isAlreadyAlarm(alarmName, this._id);
                 if(!resultMessage.getResult()){
                     break;
                 }
-                resultMessage = this.remove(alarmName, id);
+                resultMessage = this.remove(alarmName, this._id);
                 break;
             }
             case 'on': {
-                resultMessage = this.isAlreadyAlarm(alarmName, id);
+                resultMessage = this.isAlreadyAlarm(alarmName, this._id);
                 if(!resultMessage.getResult()){
                     break;
                 }
-                resultMessage = this.on(alarmName, id);
+                resultMessage = this.on(alarmName, this._id);
                 break;
             }
             case 'off': {
-                resultMessage = this.isAlreadyAlarm(alarmName, id);
+                resultMessage = this.isAlreadyAlarm(alarmName, this._id);
                 if(!resultMessage.getResult()){
                     break;
                 }
-                resultMessage = this.off(alarmName, id);
+                resultMessage = this.off(alarmName, this._id);
                 break;
             }
             case 'show': {
@@ -80,11 +84,11 @@ export class AlarmManager implements IManager {
                 break;
             }
             case 'mute': {
-                resultMessage = this.mute(id);
+                resultMessage = this.mute(this._id);
                 break;
             }
             case 'wake': {
-                resultMessage = this.wake(id);
+                resultMessage = this.wake(this._id);
                 break;
             }
             default: {
@@ -102,7 +106,7 @@ export class AlarmManager implements IManager {
 
         const alarm: Alarm = new Alarm(time, alarmName, desc, id);
         this.regist(alarm);
-        AlarmManager.alarmMap[alarm.getKey()] = alarm;
+        AlarmManager._alarmMap[alarm.getKey()] = alarm;
 
         resultMessage.setResult(true);
         resultMessage.setMessage('\"' + alarmName + '\" 알람 생성 완료!!');
@@ -113,9 +117,9 @@ export class AlarmManager implements IManager {
     private remove (alarmName: string, id: string): ResultMessage {
         const resultMessage: ResultMessage = new ResultMessage();
        
-        const alarm: Alarm = AlarmManager.alarmMap[alarmName+'_'+id];
+        const alarm: Alarm = AlarmManager._alarmMap[alarmName+'_'+id];
         this.cancel(alarm);
-        delete AlarmManager.alarmMap[alarm.getKey()];
+        delete AlarmManager._alarmMap[alarm.getKey()];
 
         resultMessage.setMessage('\"' + alarmName + '\" 알람을 제거하였습니다.');
         resultMessage.setResult(true);
@@ -126,7 +130,7 @@ export class AlarmManager implements IManager {
     private on (alarmName: string, id: string): ResultMessage {
         const resultMessage: ResultMessage = new ResultMessage();
 
-        const alarm: Alarm = AlarmManager.alarmMap[alarmName+'_'+id];
+        const alarm: Alarm = AlarmManager._alarmMap[alarmName+'_'+id];
         if(alarm.isActive()){
             resultMessage.setResult(false);
             resultMessage.setMessage('이미 켜져있는 알람입니다.');
@@ -144,7 +148,7 @@ export class AlarmManager implements IManager {
     private off (alarmName: string, id: string): ResultMessage {
         const resultMessage: ResultMessage = new ResultMessage();
 
-        const alarm: Alarm = AlarmManager.alarmMap[alarmName+'_'+id];
+        const alarm: Alarm = AlarmManager._alarmMap[alarmName+'_'+id];
         if(!alarm.isActive()){
             resultMessage.setResult(false);
             resultMessage.setMessage('이미 꺼져있는 알람입니다.');
@@ -162,9 +166,9 @@ export class AlarmManager implements IManager {
     private showList (): ResultMessage {
         const resultMessage: ResultMessage = new ResultMessage();
         let list: string = '';
-        for(const key in AlarmManager.alarmMap){
-            if(AlarmManager.alarmMap.hasOwnProperty(key)) {
-                list+=AlarmManager.alarmMap[key].getInfoString()+'\r\n';
+        for(const key in AlarmManager._alarmMap){
+            if(AlarmManager._alarmMap.hasOwnProperty(key)) {
+                list+=AlarmManager._alarmMap[key].getInfoString()+'\r\n';
             }
         }
         if (list.length === 0) {
@@ -179,10 +183,10 @@ export class AlarmManager implements IManager {
     private mute (id: string): ResultMessage {
         const resultMessage: ResultMessage = new ResultMessage();
 
-        for(const key in AlarmManager.alarmMap){
-            if(AlarmManager.alarmMap.hasOwnProperty(key)) {
-                if(AlarmManager.alarmMap[key].getId() === id) {
-                    this.cancel(AlarmManager.alarmMap[key]);
+        for(const key in AlarmManager._alarmMap){
+            if(AlarmManager._alarmMap.hasOwnProperty(key)) {
+                if(AlarmManager._alarmMap[key].getId() === id) {
+                    this.cancel(AlarmManager._alarmMap[key]);
                 }
             }
         }
@@ -195,10 +199,10 @@ export class AlarmManager implements IManager {
     private wake (id: string): ResultMessage {
         const resultMessage: ResultMessage = new ResultMessage();
 
-        for(const key in AlarmManager.alarmMap){
-            if(AlarmManager.alarmMap.hasOwnProperty(key)) {
-                if(AlarmManager.alarmMap[key].getId() === id) {
-                    this.regist(AlarmManager.alarmMap[key]);
+        for(const key in AlarmManager._alarmMap){
+            if(AlarmManager._alarmMap.hasOwnProperty(key)) {
+                if(AlarmManager._alarmMap[key].getId() === id) {
+                    this.regist(AlarmManager._alarmMap[key]);
                 }
             }
         }
@@ -211,7 +215,7 @@ export class AlarmManager implements IManager {
 
     private regist(alarm: Alarm) {
         alarm.setJob(schedule.scheduleJob(alarm.getTime(), function(){
-           console.log(AlarmManager.alarmMap[alarm.getKey()].getInfoString());
+           console.log(AlarmManager._alarmMap[alarm.getKey()].getInfoString());
            request.post({
                 url: 'http://localhost:8000/alarm',
                 body: {
@@ -238,7 +242,7 @@ export class AlarmManager implements IManager {
 
     private isAlreadyAlarm(name: string, id: string) :ResultMessage {
         const resultMessage: ResultMessage = new ResultMessage();
-        if(AlarmManager.alarmMap[name+'_'+id] === undefined) {
+        if(AlarmManager._alarmMap[name+'_'+id] === undefined) {
             resultMessage.setResult(false);
             resultMessage.setMessage('\"' + name + '\" 으로 등록된 알람이 없습니다.');
         }else{

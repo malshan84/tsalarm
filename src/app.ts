@@ -5,6 +5,7 @@ import {ResultMessage} from "./Manager/ResultMessage"
 import * as line from "@line/bot-sdk";
 import * as express from "express";
 import * as info from "./Line/info";
+import * as LineUtil from "./Line/LineUtil";
 import { JSONParseError, SignatureValidationFailed } from "../node_modules/@line/bot-sdk/lib/exceptions";
 
 import bodyParser = require('body-parser');
@@ -46,20 +47,18 @@ function handleEvent(event : Line.MessageEvent) {
     // ignore non-text-message event
     return Promise.resolve(null);
   }
-  const source : Line.EventSource = event.source;
-  const message : Line.TextEventMessage = event.message;
-
+  const text: string = event.message.text;
 	console.log('======================', new Date() ,'======================');
-	console.log('[request source] ', source);
-	console.log('[request message]', message);
-	console.log('[request text]', message.text);
+	console.log('[request source] ', event.source);
+	console.log('[request message]', event.message);
+	console.log('[request text]', text);
   
   // 1) 어떤 매니저를 사용할 지 확인
-  const kind : ManagerKind = managerFactory.getKind(message.text);
-  const manager : IManager = managerFactory.createManager(kind);
+  const manager : IManager = managerFactory.createManager(managerFactory.getKind(text));
 
+  let id : string = LineUtil.getSourceId(event.source);
   // 2) 해당 매니저로 쿼리 수행
-  let resultMessage : ResultMessage = manager.run(message.text);
+  let resultMessage : ResultMessage = manager.setId(id).run(text);
 
   const replyTextMessage : Line.TextMessage = { type: 'text', text: resultMessage.getMessage() };
 
