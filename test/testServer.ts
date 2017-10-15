@@ -20,10 +20,23 @@ describe('Server POST /webhook', function() {
                     "message": {
                         "id": "325708",
                         "type": "text",
-                        "text": '@alarm -c -t "* * * 5 * *" -n jw'
+                        "text": '@alarm -c -t "* * * * * *" -n jw'
                     }
                 }
             ]
+        }
+      )
+      .expect(200, done)
+  });
+
+  it('create query', function(done) {
+    request(app)
+      .post('/create')
+      .send(
+        {
+            "desc": "alarm create test",
+            "alarmName": "create query",
+            "id": "aaa"
         }
       )
       .expect(200, done)
@@ -46,7 +59,7 @@ describe('Server POST /webhook', function() {
                     "message": {
                         "id": "325708",
                         "type": "text",
-                        "text": '@alam -c -t "* * * 5 * *" -n jw'
+                        "text": '@alam -c -t "* * * * * *" -n jw'
                     }
                 }
             ]

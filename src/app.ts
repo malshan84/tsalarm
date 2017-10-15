@@ -66,6 +66,18 @@ function handleEvent(event : Line.MessageEvent) {
   return client.replyMessage(event.replyToken, replyTextMessage);
 }
 
+app.post('/create', line.middleware(config), (req: express.Request, res: express.Response) => {
+	const desc: string = req.body.desc;
+	const id: string = req.body.id;
+	const name: string = req.body.alarmName;
+	console.log('[Alarm Create Request] desc: ', desc);
+	console.log('[Alarm Create Request] id: ', id);
+	console.log('[Alarm Create Request] alarmName: ', name);
+	const message: Line.TextMessage = {type: "text", text : desc};
+  client.pushMessage(id, message);
+  res.sendStatus(200);
+});
+
 // listen on port
 const port : string = process.env.PORT || 8000;
 app.listen(port, () => {

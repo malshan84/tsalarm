@@ -13,7 +13,7 @@ interface AlarmMap {
 export class AlarmManager implements IManager {
     private static Instance: AlarmManager = null;
     private static _alarmMap: AlarmMap = {};
-    private _id: string = '';
+    private _id: string = '<default>';
     public static getInstance(): AlarmManager {
         if(AlarmManager.Instance === null){
             AlarmManager.Instance = new AlarmManager();
@@ -217,7 +217,7 @@ export class AlarmManager implements IManager {
         alarm.setJob(schedule.scheduleJob(alarm.getTime(), function(){
            console.log(AlarmManager._alarmMap[alarm.getKey()].getInfoString());
            request.post({
-                url: 'http://localhost:8000/alarm',
+                url: 'http://localhost:8000/create',
                 body: {
                 desc: alarm.getDescription(),
                 alarmName: alarm.getName(),
@@ -245,7 +245,7 @@ export class AlarmManager implements IManager {
         if(AlarmManager._alarmMap[name+'_'+id] === undefined) {
             resultMessage.setResult(false);
             resultMessage.setMessage('\"' + name + '\" 으로 등록된 알람이 없습니다.');
-        }else{
+        } else {
             resultMessage.setResult(true);
             resultMessage.setMessage('\"' + name + '\" 으로 등록된 알람이 이미 있습니다. 다른 이름으로 등록해주세요.');
         }
