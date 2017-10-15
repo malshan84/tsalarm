@@ -15,69 +15,69 @@ function getHelp(file : string) : string {
 }
 
  export class ArgsParser {
-   parser: ArgumentParser;
+   static parser: ArgumentParser;
 
    public constructor() {
-    this.parser = new ArgumentParser({
+    ArgsParser.parser = new ArgumentParser({
       version: '0.0.1',
       addHelp: true,
       description: 'Alarm bot Argument Parser'
     });
-    this.parser.addArgument(
+    ArgsParser.parser.addArgument(
       ['-c', '-mk'], {
         help: 'create alarm',
         nargs: 0
       }
     );
-    this.parser.addArgument(
+    ArgsParser.parser.addArgument(
       ['-t', '-time'], {
         help: 'time',
         nargs: 1
       }
     );
-    this.parser.addArgument(
+    ArgsParser.parser.addArgument(
       ['-n', '-name'], {
         help: 'name',
         nargs: 1
       }
     );
-    this.parser.addArgument(
+    ArgsParser.parser.addArgument(
       ['-d', '-description'], {
         help: 'description',
         nargs: 1
       }
     );
-    this.parser.addArgument(
+    ArgsParser.parser.addArgument(
       ['-ls', '-list'], {
         help: 'list',
         nargs: 0
       }
     );
-    this.parser.addArgument(
+    ArgsParser.parser.addArgument(
       ['-on'], {
         help: 'activate alram',
         nargs: 1
       }
     );
-    this.parser.addArgument(
+    ArgsParser.parser.addArgument(
       ['-off'], {
         help: 'deactivate alram',
         nargs: 1
       }
     );
-    this.parser.addArgument(
+    ArgsParser.parser.addArgument(
       ['-m', '-mute'], {
         help: 'mute all alarms',
         nargs: 0
       }
     );
-    this.parser.addArgument(
+    ArgsParser.parser.addArgument(
       ['-w', '-wake'], {
         help: 'wake all alarms',
         nargs: 0
       }
     )
-    this.parser.addArgument(
+    ArgsParser.parser.addArgument(
       ['-rm', '-remove'], {
         help: 'remove alram',
         nargs: 1
@@ -118,9 +118,9 @@ function getHelp(file : string) : string {
     throw Error(helpStr);
    }
 
-   public parse(commands : string) : ParsedCommands {
+   public static parse(commands : string) : ParsedCommands {
      let formattedStr : string[] = ArgsParser.mergeQuotedStr(commands.split(' '));
-     let parsedArgs = this.parser.parseArgs(formattedStr);
+     let parsedArgs = ArgsParser.parser.parseArgs(formattedStr);
      let result : ParsedCommands = new ParsedCommands();
 
      const argNames : string[] = ['c', 'mk', 'n', 'name','d', 'description', 't', 'time','on', 'off', 'm', 'mute',

@@ -53,8 +53,13 @@ function handleEvent(event : Line.MessageEvent) {
 
   let id : string = LineUtil.getSourceId(event.source);
   // 2) 해당 매니저로 쿼리 수행
-  let resultMessage : ResultMessage = manager.setId(id).run(text);
-
+  let resultMessage : ResultMessage = null;
+  try {
+    resultMessage = manager.setId(id).run(text);
+  } catch (e) {
+      const emptyMessage: Line.TextMessage = { type: 'text', text: e.message };
+      return client.replyMessage(event.replyToken, emptyMessage);
+	}
   const replyTextMessage : Line.TextMessage = { type: 'text', text: resultMessage.getMessage() };
 
   // use reply API

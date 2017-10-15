@@ -29,20 +29,34 @@ export class AlarmManager implements IManager {
         return this;
     }
 
-    public run(text: string): ResultMessage {
-
-        let result : ParsedCommands = null;
-        if(text.startsWith("@alarm ")) {
-            let argsParser = new ArgsParser();
-            result = argsParser.parse(text.substr("@alarm ".length));
-        } else if(text.startsWith("@알람 ")) {
-            let argsParser = new ArgsParser();
-            result = argsParser.parse(text.substr("@알람 ".length));
-        } else {
-            // throw
+    public getParsedCommands(text: string, headers: string[]): ParsedCommands {
+        let result: ParsedCommands = null;
+        for(let header of headers) {
+            if(text.startsWith(header)) {
+                try {
+                    result = ArgsParser.parse(text.substr(header.length));
+                } catch (e) {
+                    var message = null;
+                    if(e.message.startsWith('Example:')) {
+                        message = e.message;
+                    } else {
+                        message = '잘못된 명령어가 입력되었습니다.';
+                    }
+                    throw Error(message);
+                }
+            }
         }
+        return result;
+    }
 
-        let resultMessage: ResultMessage = new ResultMessage();   
+    public run(text: string): ResultMessage {
+        let headers: string[] = ["@alarm ", "@알람 "];
+        let result: ParsedCommands = this.getParsedCommands(text, headers);
+        if(result === null) {
+            return new ResultMessage();
+        }
+        let resultMessage: ResultMessage = new ResultMessage();           
+
         const action : string = result.getQuery();
         switch(action){
             case 'create': {
