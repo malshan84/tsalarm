@@ -29,12 +29,12 @@ describe('Server POST /webhook', function() {
       .expect(200, done)
   });
 
-  it('create query', function(done) {
+  it('alarm query', function(done) {
     request(app)
-      .post('/create')
+      .post('/alarm')
       .send(
         {
-            "desc": "alarm create test",
+            "desc": "alarm query test",
             "alarmName": "create query",
             "id": "aaa"
         }

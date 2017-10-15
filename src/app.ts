@@ -66,7 +66,7 @@ function handleEvent(event : Line.MessageEvent) {
   return client.replyMessage(event.replyToken, replyTextMessage);
 }
 
-app.post('/create', line.middleware(config), (req: express.Request, res: express.Response) => {
+app.post('/alarm', line.middleware(config), (req: express.Request, res: express.Response) => {
 	const desc: string = req.body.desc;
 	const id: string = req.body.id;
 	const name: string = req.body.alarmName;

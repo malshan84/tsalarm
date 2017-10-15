@@ -217,7 +217,7 @@ export class AlarmManager implements IManager {
         alarm.setJob(schedule.scheduleJob(alarm.getTime(), function(){
            console.log(AlarmManager._alarmMap[alarm.getKey()].getInfoString());
            request.post({
-                url: 'http://localhost:8000/create',
+                url: 'http://localhost:8000/alarm',
                 body: {
                 desc: alarm.getDescription(),
                 alarmName: alarm.getName(),
