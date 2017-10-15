@@ -42,44 +42,42 @@ export class AlarmManager implements IManager {
             // throw
         }
 
-        const alarmName: string = result.getName();
-        const description: string = result.getDesc();
         let resultMessage: ResultMessage = new ResultMessage();   
         const action : string = result.getQuery();
         switch(action){
             case 'create': {
-                resultMessage = this.isAlreadyAlarm(alarmName, this._id);
+                resultMessage = this.isAlreadyAlarm(result.getName(), this._id);
                 if(resultMessage.getResult()){
                     break;
                 }
-                resultMessage = this.create(result.getTime(), alarmName, description, this._id);
+                resultMessage = this.create(result.getTime(), result.getName(), result.getDesc(), this._id);
                 break;
             }
             case 'remove': {
-                resultMessage = this.isAlreadyAlarm(alarmName, this._id);
+                resultMessage = this.isAlreadyAlarm(result.getName(), this._id);
                 if(!resultMessage.getResult()){
                     break;
                 }
-                resultMessage = this.remove(alarmName, this._id);
+                resultMessage = this.remove(result.getName(), this._id);
                 break;
             }
             case 'on': {
-                resultMessage = this.isAlreadyAlarm(alarmName, this._id);
+                resultMessage = this.isAlreadyAlarm(result.getName(), this._id);
                 if(!resultMessage.getResult()){
                     break;
                 }
-                resultMessage = this.on(alarmName, this._id);
+                resultMessage = this.on(result.getName(), this._id);
                 break;
             }
             case 'off': {
-                resultMessage = this.isAlreadyAlarm(alarmName, this._id);
+                resultMessage = this.isAlreadyAlarm(result.getName(), this._id);
                 if(!resultMessage.getResult()){
                     break;
                 }
-                resultMessage = this.off(alarmName, this._id);
+                resultMessage = this.off(result.getName(), this._id);
                 break;
             }
-            case 'show': {
+            case 'list': {
                 resultMessage = this.showList();
                 break;
             }

@@ -27,13 +27,8 @@ app.get('/', (req: express.Request, res: express.Response) => {
 	res.end('<h1><a href="http://8ctci.weebly.com">Hello, I\'m the Master of Time!</a><h1>');
 });
 
-// app.get('/webhook', (req: express.Request, res: express.Response) => {
-// 	console.log('[GET]/');
-// 	res.writeHead(200, {'Content-Type' : 'text/html'});
-// 	res.end('<h1><a href="http://8ctci.weebly.com">Hello, I\'m the Master of Time!</a><h1>');
-// });
-
 app.post('/webhook', line.middleware(config), (req: express.Request, res: express.Response) => {
+  console.log('[POST] webhook');
     Promise
     .all(req.body.events.map(handleEvent))
     .then((result) => res.json(result));

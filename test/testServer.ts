@@ -20,7 +20,7 @@ describe('Server POST /webhook', function() {
                     "message": {
                         "id": "325708",
                         "type": "text",
-                        "text": '@alarm -c -t "* * * * * *" -n jw'
+                        "text": '@alarm -c -t "* * * 5 * *" -n jw'
                     }
                 }
             ]
