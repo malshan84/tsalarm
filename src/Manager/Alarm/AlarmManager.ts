@@ -35,6 +35,7 @@ export class AlarmManager implements IManager {
             if(text.startsWith(header)) {
                 try {
                     result = ArgsParser.parse(text.substr(header.length));
+                    break;
                 } catch (e) {
                     var message = null;
                     if(e.message.startsWith('Example:')) {

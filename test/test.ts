@@ -11,19 +11,19 @@ const manager : IManager = ManagerFactory.getInstance().createManager(kind);
  
 describe('AlarmManager test', function() {
     it('알람 생성', function(){        
-        expect(manager.run('@alarm -c -t "* * * * * *" -n "alarmName" -d "AlarmManager test"').getMessage()).to.equal('"alarmName" 알람 생성 완료!!');
+        expect(manager.run('@alarm -c -t "* * 5 * *" -n "alarmName" -d "AlarmManager test"').getMessage()).to.equal('"alarmName" 알람 생성 완료!!');
     });
     it('알람 보기', function(){        
         expect(manager.run("@alarm -ls").getMessage())
         .to.equal(
             "이름: alarmName\r\n"+
-            "시간: * * * * * *\r\n"+
+            "시간: * * 5 * *\r\n"+
             "설명: AlarmManager test\r\n"+
             "상태: 켜짐\r\n\r\n"
             );
     });       
     it('동일한 알람 생성', function(){
-        expect(manager.run('@alarm -c -t "* * * * * *" -n "alarmName" -d "AlarmManager test"').getMessage()).to.equal('"alarmName" 으로 등록된 알람이 이미 있습니다. 다른 이름으로 등록해주세요.');
+        expect(manager.run('@alarm -c -t "* * 5 * *" -n "alarmName" -d "AlarmManager test"').getMessage()).to.equal('"alarmName" 으로 등록된 알람이 이미 있습니다. 다른 이름으로 등록해주세요.');
     });
     it('모든 알람 끄기', function(){
         expect(manager.run("@alarm -mute").getMessage()).to.equal('모든 알람이 중지 되었습니다.');

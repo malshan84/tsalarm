@@ -15,14 +15,18 @@ function getHelp(file : string) : string {
 }
 
  export class ArgsParser {
-   static parser: ArgumentParser;
-
-   public constructor() {
-    ArgsParser.parser = new ArgumentParser({
+   public static parser: ArgumentParser = new ArgumentParser({
       version: '0.0.1',
       addHelp: true,
       description: 'Alarm bot Argument Parser'
     });
+   public static isInitialized: boolean = false;
+
+   public static initialize(): void {
+    if(ArgsParser.isInitialized) {
+      return;
+    }
+    ArgsParser.isInitialized = true;
     ArgsParser.parser.addArgument(
       ['-c', '-mk'], {
         help: 'create alarm',
@@ -113,13 +117,13 @@ function getHelp(file : string) : string {
      return mergedArr;
    }
 
-   public exit(status : string, message : string) {
-    let helpStr : string = getHelp('MasterOfTime/model/help.txt');
-    throw Error(helpStr);
-   }
-
    public static parse(commands : string) : ParsedCommands {
+     ArgsParser.initialize();
      let formattedStr : string[] = ArgsParser.mergeQuotedStr(commands.split(' '));
+     ArgsParser.parser.exit = function(status: number, message: string) {
+      let helpStr : string = getHelp('./help.txt');
+      throw Error(helpStr);
+     }
      let parsedArgs = ArgsParser.parser.parseArgs(formattedStr);
      let result : ParsedCommands = new ParsedCommands();
 

@@ -147,82 +147,82 @@ describe('Server POST /webhook', function() {
 });
 
 
-describe('Baseball Server Test', function() {
-  it('야구 시작', function(done) {
-    request(app)
-      .post('/webhook')
-      .send(
-        {
-            "events": [
-                {
-                    "replyToken": "nHuyWiB7yP5Zw52FIkcQobQuGDXCTA",
-                    "type": "message",
-                    "timestamp": 1462629479859,
-                    "source": {
-                        "type": "user",
-                        "userId": "U206d25c2ea6bd87c17655609a1c37cb8"
-                    },
-                    "message": {
-                        "id": "325708",
-                        "type": "text",
-                        "text": '@야구 시작'
-                    }
-                }
-            ]
-        }
-      )
-      .expect(200, done)
-  });
+// describe('Baseball Server Test', function() {
+//   it('야구 시작', function(done) {
+//     request(app)
+//       .post('/webhook')
+//       .send(
+//         {
+//             "events": [
+//                 {
+//                     "replyToken": "nHuyWiB7yP5Zw52FIkcQobQuGDXCTA",
+//                     "type": "message",
+//                     "timestamp": 1462629479859,
+//                     "source": {
+//                         "type": "user",
+//                         "userId": "U206d25c2ea6bd87c17655609a1c37cb8"
+//                     },
+//                     "message": {
+//                         "id": "325708",
+//                         "type": "text",
+//                         "text": '@야구 시작'
+//                     }
+//                 }
+//             ]
+//         }
+//       )
+//       .expect(200, done)
+//   });
 
-  it('야구 플레이', function(done) {
-    request(app)
-      .post('/webhook')
-      .send(
-        {
-            "events": [
-                {
-                    "replyToken": "nHuyWiB7yP5Zw52FIkcQobQuGDXCTA",
-                    "type": "message",
-                    "timestamp": 1462629479859,
-                    "source": {
-                        "type": "user",
-                        "userId": "U206d25c2ea6bd87c17655609a1c37cb8"
-                    },
-                    "message": {
-                        "id": "325708",
-                        "type": "text",
-                        "text": '@야구 1 2 9'
-                    }
-                }
-            ]
-        }
-      )
-      .expect(200, done)
-  });
+//   it('야구 플레이', function(done) {
+//     request(app)
+//       .post('/webhook')
+//       .send(
+//         {
+//             "events": [
+//                 {
+//                     "replyToken": "nHuyWiB7yP5Zw52FIkcQobQuGDXCTA",
+//                     "type": "message",
+//                     "timestamp": 1462629479859,
+//                     "source": {
+//                         "type": "user",
+//                         "userId": "U206d25c2ea6bd87c17655609a1c37cb8"
+//                     },
+//                     "message": {
+//                         "id": "325708",
+//                         "type": "text",
+//                         "text": '@야구 1 2 9'
+//                     }
+//                 }
+//             ]
+//         }
+//       )
+//       .expect(200, done)
+//   });
   
-  it('야구 에러', function(done) {
-    request(app)
-      .post('/webhook')
-      .send(
-        {
-            "events": [
-                {
-                    "replyToken": "nHuyWiB7yP5Zw52FIkcQobQuGDXCTA",
-                    "type": "message",
-                    "timestamp": 1462629479859,
-                    "source": {
-                        "type": "user",
-                        "userId": "U206d25c2ea6bd87c17655609a1c37cb8"
-                    },
-                    "message": {
-                        "id": "325708",
-                        "type": "text",
-                        "text": '@야구 33 2 99'
-                    }
-                }
-            ]
-        }
-      )
-      .expect(200, done)
-  });
-});
+//   it('야구 에러', function(done) {
+//     request(app)
+//       .post('/webhook')
+//       .send(
+//         {
+//             "events": [
+//                 {
+//                     "replyToken": "nHuyWiB7yP5Zw52FIkcQobQuGDXCTA",
+//                     "type": "message",
+//                     "timestamp": 1462629479859,
+//                     "source": {
+//                         "type": "user",
+//                         "userId": "U206d25c2ea6bd87c17655609a1c37cb8"
+//                     },
+//                     "message": {
+//                         "id": "325708",
+//                         "type": "text",
+//                         "text": '@야구 33 2 99'
+//                     }
+//                 }
+//             ]
+//         }
+//       )
+//       .expect(200, done)
+//   });
+// });
