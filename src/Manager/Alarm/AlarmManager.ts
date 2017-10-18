@@ -37,7 +37,7 @@ export class AlarmManager implements IManager {
                     result = ArgsParser.parse(text.substr(header.length));
                     break;
                 } catch (e) {
-                    var message = null;
+                    let message: string = null;
                     if(e.message.startsWith('Example:')) {
                         message = e.message;
                     } else {
