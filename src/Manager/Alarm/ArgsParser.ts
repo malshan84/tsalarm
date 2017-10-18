@@ -121,7 +121,7 @@ function getHelp(file : string) : string {
      ArgsParser.initialize();
      let formattedStr : string[] = ArgsParser.mergeQuotedStr(commands.split(' '));
      ArgsParser.parser.exit = function(status: number, message: string) {
-      let helpStr : string = getHelp('./help.txt');
+      let helpStr : string = getHelp('src/Manager/Alarm/help.txt');
       throw Error(helpStr);
      }
      let parsedArgs = ArgsParser.parser.parseArgs(formattedStr);
