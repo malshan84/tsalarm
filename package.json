@@ -13,6 +13,7 @@
     "node-schedule": "^1.2.3"
   },
   "devDependencies": {
+    "@types/body-parser": "^1.16.5",
     "@types/chai": "^4.0.0",
     "@types/mocha": "^2.2.41",
     "@types/node": "^7.0.31",
