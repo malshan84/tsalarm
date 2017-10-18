@@ -1,19 +1,15 @@
-import { ManagerFactory } from "./Manager/ManagerFactory"
-import { ManagerKind } from "./Manager/ManagerFactory"
+import { ManagerFactory, ManagerKind } from "./Manager/ManagerFactory"
 import { IManager } from "./Manager/IManager";
 import {ResultMessage} from "./Manager/ResultMessage"
 import * as line from "@line/bot-sdk";
 import * as express from "express";
-import * as info from "./Line/info";
+import {CHANNEL_ACCESS_TOKEN, CHANNEL_SECRET} from "./Line/info";
 import * as LineUtil from "./Line/LineUtil";
 import { JSONParseError, SignatureValidationFailed } from "../node_modules/@line/bot-sdk/lib/exceptions";
 
 import bodyParser = require('body-parser');
 
-const config = {
-    channelAccessToken: info.CHANNEL_ACCESS_TOKEN,
-    channelSecret: info.CHANNEL_SECRET
-};
+const config: Line.Config & Line.ClientConfig = {channelAccessToken: CHANNEL_ACCESS_TOKEN, channelSecret: CHANNEL_SECRET};
 
 const client : line.Client = new line.Client(config);
 
@@ -27,7 +23,7 @@ app.get('/', (req: express.Request, res: express.Response) => {
 	res.end('<h1><a href="http://8ctci.weebly.com">Hello, I\'m the Master of Time!</a><h1>');
 });
 
-app.post('/webhook', line.middleware(config), (req: express.Request, res: express.Response) => {
+app.post('/webhook', (req: express.Request, res: express.Response) => {
   console.log('[POST] webhook');
     Promise
     .all(req.body.events.map(handleEvent))
