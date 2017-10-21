@@ -4,8 +4,8 @@ import {ArgumentParser} from 'argparse';
 import {ParsedCommands} from './ParsedCommands';
 import * as fs from "fs";
 
-var argsParser : any = null;
-var text : string = null;
+let argsParser : any = null;
+let text : string = null;
 
 function getHelp(file : string) : string {
   if(text == null) {
@@ -95,12 +95,12 @@ function getHelp(file : string) : string {
    static wsReplacer : string = '#_#'; // white space 치환 문자
 
    public static mergeQuotedStr(strArr : Array<string>) : Array<string> {
-     var mergedArr : Array<string> = new Array<string>();
-     for (var i = 0; i < strArr.length; i++) {
-       var str = strArr[i];
+     let mergedArr : Array<string> = new Array<string>();
+     for (let i: any = 0; i < strArr.length; i++) {
+       let str: string = strArr[i];
        if (strArr[i].match(/^"/)) {
-         var strQuoted = "";
-         for (var j = i; j < strArr.length; j++) {
+         let strQuoted: string = "";
+         for (let j: any = i; j < strArr.length; j++) {
            if (!strArr[j].match(/"$/)) {
              strQuoted += strArr[j] + ArgsParser.wsReplacer;
            } else {
