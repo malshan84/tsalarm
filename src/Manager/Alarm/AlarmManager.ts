@@ -182,8 +182,7 @@ export class AlarmManager implements IManager {
 
         this.regist(alarm);
 
-        let dbInstance: MongoDB = new MongoDB({ "alarmName": alarmName, "id": id }, 
-        this.changeJson(AlarmManager._alarmMap[alarmName + '_' + id]));
+        let dbInstance: MongoDB = new MongoDB({ "alarmName": alarmName, "id": id }, this.changeJson(alarm));
         dbInstance.findOneAndUpdate();
 
 
@@ -205,8 +204,7 @@ export class AlarmManager implements IManager {
 
         this.cancel(alarm);
 
-        let dbInstance: MongoDB = new MongoDB({ "alarmName": alarmName, "id": id }, 
-        this.changeJson(AlarmManager._alarmMap[alarmName + '_' + id]));
+        let dbInstance: MongoDB = new MongoDB({ "alarmName": alarmName, "id": id }, this.changeJson(alarm));
         dbInstance.findOneAndUpdate();
 
         resultMessage.setResult(true);
