@@ -117,7 +117,7 @@ export class AlarmManager implements IManager {
                 break;
             }
             case 'list': {
-                resultMessage = this.showList();
+                resultMessage = this.showList(this._id);
                 break;
             }
             case 'mute': {
@@ -215,12 +215,14 @@ export class AlarmManager implements IManager {
         return resultMessage;
     }
 
-    private showList (): ResultMessage {
+    private showList (id: string): ResultMessage {
         const resultMessage: ResultMessage = new ResultMessage();
         let list: string = '';
         for(const key in AlarmManager._alarmMap){
             if(AlarmManager._alarmMap.hasOwnProperty(key)) {
-                list+=AlarmManager._alarmMap[key].getInfoString()+'\r\n';
+                if(AlarmManager._alarmMap[key].getId() === id) {
+                    list += AlarmManager._alarmMap[key].getInfoString()+'\r\n';
+                }
             }
         }
         if (list.length === 0) {
