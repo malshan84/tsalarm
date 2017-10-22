@@ -157,18 +157,32 @@ export class AlarmManager implements IManager {
     private remove (alarmName: string, id: string): ResultMessage {
         const resultMessage: ResultMessage = new ResultMessage();
        
+        if (! this.hasAlarm(alarmName, id)) {
+            resultMessage.setResult(false);
+            resultMessage.setMessage('\"' + alarmName + '\" 으로 등록된 알람이 없습니다.');
+            return resultMessage;
+        }
+
+        let dbInstance: MongoDB = new MongoDB(this.changeJson(AlarmManager._alarmMap[alarmName + '_' + id]));
+        dbInstance.remove();
+        
         const alarm: Alarm = AlarmManager._alarmMap[alarmName+'_'+id];
         this.cancel(alarm);
         delete AlarmManager._alarmMap[alarm.getKey()];
 
-        let dbInstance: MongoDB = new MongoDB(this.changeJson(alarm));
-        dbInstance.remove();
 
         resultMessage.setMessage('\"' + alarmName + '\" 알람을 제거하였습니다.');
         resultMessage.setResult(true);
 
         return resultMessage;
     }
+
+    public hasAlarm(alarmName: string, id: string) {
+        if (AlarmManager._alarmMap[alarmName + '_' + id] === undefined) {
+            return false;
+        }
+        return true;
+    };
 
     private on (alarmName: string, id: string): ResultMessage {
         const resultMessage: ResultMessage = new ResultMessage();
