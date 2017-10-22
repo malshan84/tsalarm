@@ -145,6 +145,9 @@ export class AlarmManager implements IManager {
         this.regist(alarm);
         AlarmManager._alarmMap[alarm.getKey()] = alarm;
 
+        let dbInstance: MongoDB = new MongoDB(this.changeJson(alarm));
+        dbInstance.save();
+        
         resultMessage.setResult(true);
         resultMessage.setMessage('\"' + alarmName + '\" 알람 생성 완료!!');
 
@@ -157,6 +160,9 @@ export class AlarmManager implements IManager {
         const alarm: Alarm = AlarmManager._alarmMap[alarmName+'_'+id];
         this.cancel(alarm);
         delete AlarmManager._alarmMap[alarm.getKey()];
+
+        let dbInstance: MongoDB = new MongoDB(this.changeJson(alarm));
+        dbInstance.remove();
 
         resultMessage.setMessage('\"' + alarmName + '\" 알람을 제거하였습니다.');
         resultMessage.setResult(true);
@@ -176,6 +182,11 @@ export class AlarmManager implements IManager {
 
         this.regist(alarm);
 
+        let dbInstance: MongoDB = new MongoDB({ "alarmName": alarmName, "id": id }, 
+        this.changeJson(AlarmManager._alarmMap[alarmName + '_' + id]));
+        dbInstance.findOneAndUpdate();
+
+
         resultMessage.setResult(true);
         resultMessage.setMessage('\"' + alarmName + '\" 으로 등록된 알람이 시작 되었습니다.');
 
@@ -193,6 +204,10 @@ export class AlarmManager implements IManager {
         }
 
         this.cancel(alarm);
+
+        let dbInstance: MongoDB = new MongoDB({ "alarmName": alarmName, "id": id }, 
+        this.changeJson(AlarmManager._alarmMap[alarmName + '_' + id]));
+        dbInstance.findOneAndUpdate();
 
         resultMessage.setResult(true);
         resultMessage.setMessage('\"' + alarmName + '\" 으로 등록된 알람이 중지 되었습니다.');
@@ -223,10 +238,16 @@ export class AlarmManager implements IManager {
         for(const key in AlarmManager._alarmMap){
             if(AlarmManager._alarmMap.hasOwnProperty(key)) {
                 if(AlarmManager._alarmMap[key].getId() === id) {
+                    let alarmName: string = AlarmManager._alarmMap[key].getName();
                     this.cancel(AlarmManager._alarmMap[key]);
+
+                    let dbInstance: MongoDB = new MongoDB({ "alarmName": alarmName, "id": id }, 
+                    this.changeJson(AlarmManager._alarmMap[alarmName + '_' + id]));
+                    dbInstance.findOneAndUpdate();
                 }
             }
         }
+
 
         resultMessage.setMessage('모든 알람이 중지 되었습니다.');
         resultMessage.setResult(true);
@@ -239,7 +260,12 @@ export class AlarmManager implements IManager {
         for(const key in AlarmManager._alarmMap){
             if(AlarmManager._alarmMap.hasOwnProperty(key)) {
                 if(AlarmManager._alarmMap[key].getId() === id) {
+                    let alarmName: string = AlarmManager._alarmMap[key].getName();
                     this.regist(AlarmManager._alarmMap[key]);
+
+                    let dbInstance: MongoDB = new MongoDB({ "alarmName": alarmName, "id": id }, 
+                    this.changeJson(AlarmManager._alarmMap[alarmName + '_' + id]));
+                    dbInstance.findOneAndUpdate();
                 }
             }
         }
@@ -288,4 +314,16 @@ export class AlarmManager implements IManager {
         }
         return resultMessage;
     }
+
+    private changeJson(alarm: Alarm): any{
+        let jsonModel = {
+        alarmName: alarm.getName(),
+        time: alarm.getTime(),
+        active: alarm.isActive(),
+        id: alarm.getId(),
+        desc: alarm.getDescription()
+        };
+
+        return jsonModel;
+    };
 }
