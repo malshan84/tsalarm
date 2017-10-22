@@ -5,7 +5,6 @@ export class Alarm {
     private time_: string;
     private alarmName_: string;
     private desc_: string = "";
-    private room_: string;
     private active_: boolean = true;
     private id_: string;
     private job_: Job;

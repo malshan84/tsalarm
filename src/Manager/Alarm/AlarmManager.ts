@@ -5,6 +5,9 @@ import {ArgsParser} from './ArgsParser'
 import * as schedule from 'node-schedule'
 import {ParsedCommands} from './ParsedCommands';
 import * as request from 'request';
+import {MongoDB} from '../../db/mongodb-helper';
+//import {Logger} from 'logger';
+var logger = require('logger').createLogger('server.log');
 
 interface AlarmMap {
     [key: string]: Alarm;
@@ -17,12 +20,33 @@ export class AlarmManager implements IManager {
     public static getInstance(): AlarmManager {
         if(AlarmManager.Instance === null){
             AlarmManager.Instance = new AlarmManager();
+            AlarmManager.Instance.initAlarm();
         }
 
         return AlarmManager.Instance;
     }
 
     private constructor () {}
+
+    private initAlarm(): void {
+        function initFunc(alarmModels: any) {
+            logger.info("init 중입니다!");
+            console.log("init 중입니다!");
+            alarmModels.forEach(function (model: any) {
+                let alarmModel = model._doc;
+                let alarmName = alarmModel.alarmName;
+                let id = alarmModel.id;
+                let alarm = new Alarm(alarmModel.time, alarmName, alarmModel.desc, alarmModel.id);
+                AlarmManager._alarmMap[alarm.getKey()] = alarm;
+                if (alarmModel.active === true) {
+                    AlarmManager.getInstance().regist(alarm);
+                }
+            });
+        };
+        let dbInstance: MongoDB = new MongoDB();
+        dbInstance.allFind(initFunc);
+        return;
+    }
 
     public setId(id: string): IManager {
         this._id = id;

@@ -24,7 +24,9 @@
     "chai": "^4.0.2",
     "express": "^4.16.2",
     "fs": "0.0.1-security",
+    "logger": "0.0.1",
     "mocha": "^3.4.2",
+    "mongoose": "^4.12.4",
     "request": "^2.83.0",
     "supertest": "^3.0.0"
   }
